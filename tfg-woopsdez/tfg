@@ -1,0 +1,239 @@
+--[[ ///////// logging ///////// ]]--
+
+h = fs.open("/log", "a") 
+h.write("---- start ---- \n")
+h.close()
+
+-- ログ出力機能
+function writeMsg(msg)
+  print (msg)
+  h = fs.open("/log", "a")
+  h.write(tostring(msg).."\n")
+  h.close()
+end
+
+function errorLog(r,e)
+  if not r then
+    h = fs.open("/log", "a")
+    writeMsg(e)
+    h.close()
+  end
+end
+
+--[[ ///////// アイテム移動関連 ///////// ]]--
+
+-- 他のスロットからアイテムを集めてくる
+function itemCollect(slot)
+
+  -- 現在のアイテム数をカウント
+  local startCount = turtle.getItemCount(slot)
+  for i = 1, 16 do
+    turtle.select(i)
+    turtle.transferTo(slot)
+  end
+  turtle.select(slot)
+  local endCount = turtle.getItemCount(slot)
+
+  -- それより数が多くなっていればtrueを返す
+  if startCount >= endCount then
+      return false
+  end
+  return true
+end
+
+-- アイテムドロップする機能 範囲をjで指定
+function itemDrop(slot,dirStr)
+  for i = 1, slot do
+    turtle.select(i)
+    if dirStr ~= nil then
+        turtle["drop"..dirStr]()
+    end
+    turtle.drop()
+  end
+end
+
+-- アイテム総数をカウントする機能
+-- slotでカウント範囲を指定
+function getAllItem(slot)
+  local ct = 0
+  for i = 1, slot do
+    ct = ct + turtle.getItemCount(i)
+  end
+  tfg.writeMsg("I digged item "..ct)
+  return ct
+end
+
+-- 一定感覚でアイテムを配置したいとき
+function placeItem(slot,count,space)
+  if count == space then
+    turtle.turnLeft()
+    turtle.turnLeft()
+    turtle.select(slot)
+    r,e = turtle.place()
+    tfg.writeMsg(torch)
+    errorLog(r,e)
+    turtle.turnLeft()
+    turtle.turnLeft()
+  end
+end
+
+-- アイテムを比較する
+function itemCompare(slot,dirStr,target)
+  turtle.select(slot)
+  if dirStr == nill then
+    dirStr = ""
+  end
+  if not turtle["compare"..dirStr](target) then
+    return false
+  end
+  return true
+end
+
+--[[ ///////// 燃料関連 ///////// ]]--
+
+-- 現在の燃料を表示
+function fuelPrint()
+  fuelLvCount = "------------\n"..turtle.getFuelLevel().."dayo!\n------------"
+  writeMsg(fuelLvCount)
+end
+
+-- 燃料が80より少なければ補給する
+-- 引数はslotと補給したい数
+function autoRefuel(slot,count)
+  if turtle.getFuelLevel() <= 80 then
+    turtle.select(slot)
+    if count == nil then
+      count = 1
+    end
+    local r,e = turtle.refuel(count)
+    errorLog(r,e)
+  end
+end
+
+-- 起動時に算出して燃料を補給する
+function bootingRefuel(length,use,slot)
+  fuelPrint() -- 現在の燃料を表示 --
+
+  -- xに対して燃料が足りているか調べる --
+  local wantFuelLv = length * use -- 必要な燃料を算出
+  local needFuelLv = turtle.getFuelLevel() - wantFuelLv -- 必要な燃料で現在の燃料を引く
+  writeMsg("want "..wantFuelLv)
+  writeMsg("need "..needFuelLv)
+
+  while 0 >= needFuelLv do --燃料がプラスになるまで繰り返す
+    turtle.select(slot)
+    -- もし足りなかったら(もしrefuelでエラーがかえったら)
+    if not turtle.refuel(1) then
+      r,e = turtle.refuel(1)
+      -- エラー文を表示
+      writeMsg(e)
+      return false -- 処理を中断する
+    end
+    -- 現在の燃料を取得してローカル変数「fl」に格納
+    local fl = turtle.getFuelLevel()
+    -- 現在の燃料がプラスになるか計算する
+    needFuelLv = fl - wantFuelLv
+    -- 分かりづらいので、ちょこちょこプリントする
+    textutils.slowPrint("now "..fl.."...")
+  end
+  turtle.select(1)
+  writeMsg("done") -- 補給終了
+end
+
+--[[ ///////// 移動関連 ///////// ]]--
+
+-- 帰ってくる機能
+-- xの数だけbackする
+function getHome(x)
+  for i = 1, x do
+    turtle.back()
+  end
+end
+
+-- 現在の位置から両サイドにターンしてメソッドを実行
+-- 引数にメソッド名の「turtle.」を抜いたものを文字列で渡す
+function turnAround(methodStr)
+  turtle.turnLeft()
+  while turtle[methodStr]() do
+    os.sleep(0.4)
+  end 
+  turtle.turnLeft()
+  turtle.turnLeft()
+  while turtle[methodStr]() do
+    os.sleep(0.4)
+  end 
+  turtle.turnLeft()
+  while turtle[methodStr]() do
+    os.sleep(0.4)
+  end 
+end
+
+--[[ ///////// ユーザー入力関連 ///////// ]]--
+
+-- y/nの二択用 それ以外の文字列が返ってきたら処理を繰り返す
+-- msg > 表示用メッセージ
+-- yStr > true時に入力させたい文
+-- nStr > false時に入力させたい文
+
+function userInputYN(msg,yStr,nStr)
+  while true do
+    print(msg)
+    local ans = read()
+    if ans == yStr then
+      return true
+    elseif ans == nStr then
+      return false
+    end
+  end
+end
+
+
+-- [[ ////////// 周辺機器 ////////// ]]--
+function listPeripheral()
+  for n,v in ipairs (peripheral.getNames()) do
+    number = tostring(n)
+    dir = tostring(v)
+    type = peripheral.getType(v)
+    textutils.tabulate({number , dir , type})
+  end
+  return number , dir , type
+end
+
+function checkPeripheral(typeStr)
+  number , dir , type = listPeripheral()
+  if not typeStr == type then
+    return false
+  end
+  return true , dir
+end
+
+-- [[ ////////// レッドストーン入出力 ////////// ]]--
+function switch(rsDir)
+  rs.setOutput(rsDir, true)
+  sleep(1)
+  rs.setOutput(rsDir, false)
+end
+
+-- [[ ////////// レッドネット送信系 ////////// ]]--
+function sendRedNetMsg(id,msg)
+  r , modemDir = checkPeripheral("modem")
+  rednet.open(modemDir)
+  rednet.send(id,msg,true)
+  rednet.close(modemdir)
+  writeMsg("sent message")
+end
+
+-- [[ ////////// ファイル操作関連 ////////// ]]--
+-- 特定のファイルがあればtrueを返す
+function checkFile(filePath)
+  local fileName = fs.getName(filePath)
+  local configDir = fs.getDrive(filePath)
+
+  for i, v in ipairs(fs.list(configDir)) do
+    textutils.tabulate({i, v}) -- ファイルリスト出力
+    if v == fileName then
+      return true , i
+    end
+  end
+  return false , nil
+end
