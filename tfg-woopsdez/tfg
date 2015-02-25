@@ -123,9 +123,8 @@ function bootingRefuel(length,use,slot)
   while 0 >= needFuelLv do --燃料がプラスになるまで繰り返す
     turtle.select(slot)
     -- もし足りなかったら(もしrefuelでエラーがかえったら)
-    if not turtle.refuel(1) then
-      r,e = turtle.refuel(1)
-      -- エラー文を表示
+    local r, e = turtle.refuel(1)
+    if not r then
       writeMsg(e)
       return false -- 処理を中断する
     end
