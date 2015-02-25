@@ -203,7 +203,7 @@ end
 -- 引数に渡した周辺機器が接続されているかを確認、その方向を返す関数
 function checkPeripheral(typeStr)
   local number , dir , type = listPeripheral()
-  if not typeStr == type then
+  if typeStr ~= type then
     return false
   end
   return true , dir
