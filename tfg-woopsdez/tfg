@@ -45,10 +45,11 @@ end
 function itemDrop(slot,dirStr)
   for i = 1, slot do
     turtle.select(i)
-    if dirStr ~= nil then
-        turtle["drop"..dirStr]()
-    end
-    turtle.drop()
+    if dirStr == nil then
+      turtle.drop()
+    else
+      turtle["drop"..dirStr]()
+    end    
   end
 end
 
