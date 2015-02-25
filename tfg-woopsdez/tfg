@@ -189,6 +189,8 @@ end
 
 
 -- [[ ////////// 周辺機器 ////////// ]]--
+
+-- 周辺機器をリスト出力する関数
 function listPeripheral()
   for n,v in ipairs (peripheral.getNames()) do
     local number = tostring(n)
@@ -196,9 +198,9 @@ function listPeripheral()
     local type = peripheral.getType(v)
     textutils.tabulate({number , dir , type})
   end
-  return number , dir , type
 end
 
+-- 引数に渡した周辺機器が接続されているかを確認、その方向を返す関数
 function checkPeripheral(typeStr)
   local number , dir , type = listPeripheral()
   if not typeStr == type then
