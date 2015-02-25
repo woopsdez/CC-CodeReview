@@ -1,6 +1,6 @@
 --[[ ///////// logging ///////// ]]--
 
-h = fs.open("/log", "a") 
+local h = fs.open("/log", "a") 
 h.write("---- start ---- \n")
 h.close()
 
@@ -69,7 +69,7 @@ function placeItem(slot,count,space)
     turtle.turnLeft()
     turtle.turnLeft()
     turtle.select(slot)
-    r,e = turtle.place()
+    local r,e = turtle.place()
     tfg.writeMsg(count)
     errorLog(r,e)
     turtle.turnLeft()
@@ -93,7 +93,7 @@ end
 
 -- 現在の燃料を表示
 function fuelPrint()
-  fuelLvCount = "------------\n"..turtle.getFuelLevel().."dayo!\n------------"
+  local fuelLvCount = "------------\n"..turtle.getFuelLevel().."dayo!\n------------"
   writeMsg(fuelLvCount)
 end
 
@@ -102,6 +102,7 @@ end
 function autoRefuel(slot,count)
   if turtle.getFuelLevel() <= 80 then
     turtle.select(slot)
+    local count
     if count == nil then
       count = 1
     end
@@ -190,16 +191,16 @@ end
 -- [[ ////////// 周辺機器 ////////// ]]--
 function listPeripheral()
   for n,v in ipairs (peripheral.getNames()) do
-    number = tostring(n)
-    dir = tostring(v)
-    type = peripheral.getType(v)
+    local number = tostring(n)
+    local dir = tostring(v)
+    local type = peripheral.getType(v)
     textutils.tabulate({number , dir , type})
   end
   return number , dir , type
 end
 
 function checkPeripheral(typeStr)
-  number , dir , type = listPeripheral()
+  local number , dir , type = listPeripheral()
   if not typeStr == type then
     return false
   end
@@ -215,7 +216,7 @@ end
 
 -- [[ ////////// レッドネット送信系 ////////// ]]--
 function sendRedNetMsg(id,msg)
-  r , modemDir = checkPeripheral("modem")
+  local r , modemDir = checkPeripheral("modem")
   rednet.open(modemDir)
   rednet.send(id,msg,true)
   rednet.close(modemdir)
