@@ -13,21 +13,29 @@
 * tun 解説
 * ライセンスについて
 
+
+# Computer Craft バージョン
+1.63
+
+※ 1.7〜への対応は時期未定ですが、なるべくやりたいです。
+
+---
+
 # 機能解説
 
 ## ログ表示
 logファイルが自動で作成されます。
 
-### write_msg(msg)
+### writeMsg(msg)
 ```lua
-tfg.write_msg("Hello World!")
+tfg.writeMsg("Hello World!")
 ```
 プリントとログファイルへの出力を同時に行う。
 
 ### errorLog(r,e)
 
 ```lua
-r,e = turtle.dig()
+local r,e = turtle.dig()
 tfg.errorLog
 ```
 
@@ -48,7 +56,7 @@ slotのアイテムが10以下になったとき、他スロットからアイ�
 ### itemDrop(slot)
 
 ```lua
-tfg.itemCollect(3)
+tfg.itemDrop(3)
 ```
 
 slotまでのスロットからアイテムをドロップする
@@ -78,7 +86,11 @@ space：間隔を指定
 
 ** countはサンプルコードのように、事前に+1を足してカウントアップしておく必要があります。**
 
-> 松明を置くときに超便利！
+> 松明を置くときに便利？
+
+### itemCompare(slot,dirStr,target)
+
+※ 実装中
 
 ## 燃料補給
 
@@ -141,18 +153,54 @@ tfg.turnAround("attack")
 > まわりを掘りすすめたり、外壁を作るときに便利！
 
 ## ユーザー入力
-### userInputWait(msg)
+### userInputYN(msg,yStr,nStr)
 
 ```lua
-tfg.userInputWait("Do you like Sushi? [y/n]")
+tfg.userInputYN("Do you like Sushi? [y/n]",y,n)
 ```
 
 ユーザーからの入力によって分岐する機能。yes noの二択用。それ以外の文字列が返ってきたら処理を繰り返す。
 
 > 続けますか？ これでいいですか？ とかしたいときに便利
 
-# Computer Craft バージョン
-1.63
+## 周辺機器
+### listPeripheral()
+
+```lua
+listPeripheral()
+```
+
+実行すると端末に接続されている周辺機器を出力します。
+
+> なにが接続できてるか分からないときに。
+
+### checkPeripheral(typeStr)
+
+```lua
+checkPeripheral("monitor")
+```
+引数に渡した周辺機器が接続されていれば、trueとその方向を返します。
+
+> モデム接続方向の確認とかに。
+
+## レッドストーン入出力
+### switch(rsDir)
+
+```lua
+switch("left")
+```
+レッドストーン信号を、指定した方向に発します。1秒間。
+
+> クロック回路のように使うと便利。
+
+## レッドネット関連
+### sendRedNetMsg(id,msg)
+```lua
+sendRedNetMsg(1,"hello world!")
+```
+モデムの接続を確認し、それを利用して指定したIDの端末宛にメッセージを送信します。
+
+> モデムの方向が分からなくても送信できるので便利。
 
 ----
 
