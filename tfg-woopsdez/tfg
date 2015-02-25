@@ -224,18 +224,3 @@ function sendRedNetMsg(id,msg)
   rednet.close(modemdir)
   writeMsg("sent message")
 end
-
--- [[ ////////// ファイル操作関連 ////////// ]]--
--- 特定のファイルがあればtrueを返す
-function checkFile(filePath)
-  local fileName = fs.getName(filePath)
-  local configDir = fs.getDrive(filePath)
-
-  for i, v in ipairs(fs.list(configDir)) do
-    textutils.tabulate({i, v}) -- ファイルリスト出力
-    if v == fileName then
-      return true , i
-    end
-  end
-  return false , nil
-end
