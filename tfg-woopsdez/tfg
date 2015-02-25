@@ -42,7 +42,7 @@ function itemCollect(slot)
 end
 
 -- アイテムドロップする機能 範囲をjで指定
-function itemDrop(slot,dirStr)
+function itemRangeDrop(slot,dirStr)
   for i = 1, slot do
     turtle.select(i)
     if dirStr == nil then
@@ -55,7 +55,7 @@ end
 
 -- アイテム総数をカウントする機能
 -- slotでカウント範囲を指定
-function getAllItem(slot)
+function itemRangeCount(slot)
   local count = 0
   for i = 1, slot do
     count = count + turtle.getItemCount(i)
@@ -65,6 +65,10 @@ function getAllItem(slot)
 end
 
 -- 一定感覚でアイテムを配置したいとき
+-- TODO
+-- カウントが一致したときのみアイテムを配置するという処理なので
+-- それにあった名前に変更する。
+-- もしくは、処理を変更する。
 function placeItem(slot,count,space)
   if count == space then
     turtle.turnLeft()
@@ -145,7 +149,7 @@ end
 
 -- 帰ってくる機能
 -- xの数だけbackする
-function getHome(x)
+function getBack(x)
   for i = 1, x do
     turtle.back()
   end
@@ -153,7 +157,7 @@ end
 
 -- 現在の位置から両サイドにターンしてメソッドを実行
 -- 引数にメソッド名の「turtle.」を抜いたものを文字列で渡す
-function turnAround(methodStr)
+function doAround(methodStr)
   turtle.turnLeft()
   while turtle[methodStr]() do
     os.sleep(0.4)

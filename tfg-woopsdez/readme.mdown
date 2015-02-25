@@ -53,20 +53,20 @@ slotのアイテムが10以下になったとき、他スロットからアイ�
 
 > 外壁を作るときの丸石や、田植をするときの種を集めるのに使うと便利。
 
-### itemDrop(slot)
+### itemRangeDrop(slot,dirStr)
 
 ```lua
-tfg.itemDrop(3)
+tfg.itemRangeDrop(3,"Down")
 ```
 
 slotまでのスロットからアイテムをドロップする
 
 > ドロップしたくないアイテムを最後の方に集めておいて使うと便利。
 
-### getAllItem(slot)
+### itemRangeCount(slot)
 
 ```lua
-tfg.getAllItem(3)
+tfg.itemRangeCount(3)
 ```
 
 slotまでのアイテムの総数を表示する
@@ -84,7 +84,7 @@ slot：配置したいアイテムのスロットを指定
 count：カウントアップで使っている変数を入れる
 space：間隔を指定
 
-** countはサンプルコードのように、事前に+1を足してカウントアップしておく必要があります。**
+`` countはサンプルコードのように、事前に+1を足してカウントアップしておく必要があります。``
 
 > 松明を置くときに便利？
 
@@ -127,28 +127,28 @@ slot：燃料用のスロットを指定
 
 ## タートル移動
 
-### getHome(x)
+### getBack(x)
 ```lua
-tfg.getHome(x)
+tfg.getBack(x)
 ```
 
 xの長さだけバックして移動。
 
 > xの処理分進んで、そのまま戻らせたいときにべん…り？
 
-### turnAround(methodStr)
+### doAround(methodStr)
 ```lua
 -- 掘りたいとき
-tfg.turnAround("dig")
+tfg.doAround("dig")
 -- 置きたいとき
-tfg.turnAround("place")
+tfg.doAround("place")
 -- 攻撃したいとき
-tfg.turnAround("attack")
+tfg.doAround("attack")
 ```
 現在の位置から両サイドにターンしてメソッドを実行。
 左まわりで回転し、正面、左右に実行します。
 
-** 背面には実行しません**
+`` 背面には実行しません ``
 
 > まわりを掘りすすめたり、外壁を作るときに便利！
 
