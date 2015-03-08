@@ -206,11 +206,14 @@ end
 
 -- 引数に渡した周辺機器が接続されているかを確認、その方向を返す関数
 function checkPeripheral(typeStr)
-  local number , dir , type = listPeripheral()
-  if typeStr ~= type then
-    return false
+  for n,v in ipairs (peripheral.getNames()) do
+    local dir = tostring(v)
+    local type = peripheral.getType(v)
+    if typeStr == type then
+      return true , dir
+    end
   end
-  return true , dir
+  return false , nil
 end
 
 -- [[ ////////// レッドストーン入出力 ////////// ]]--
