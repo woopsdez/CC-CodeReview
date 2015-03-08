@@ -107,7 +107,6 @@ end
 function autoRefuel(slot,count)
   if turtle.getFuelLevel() <= 80 then
     turtle.select(slot)
-    local count
     if count == nil then
       count = 1
     end
