@@ -1,22 +1,20 @@
 --[[ ///////// ログ出力関連 ///////// ]]--
 
-local h = fs.open("/log", "a") 
-h.write("---- start ---- \n")
-h.close()
+function fileWrite(str)
+  local h = fs.open("/log", "a") 
+  h.write(str)
+  h.close()
+end
 
 -- ログ出力機能
 function writeMsg(msg)
   print (msg)
-  h = fs.open("/log", "a")
-  h.write(tostring(msg).."\n")
-  h.close()
+  fileWrite(tostring(msg).."\n")
 end
 
 function errorLog(r,e)
   if not r then
-    h = fs.open("/log", "a")
     writeMsg(e)
-    h.close()
   end
 end
 
